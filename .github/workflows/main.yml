@@ -1,0 +1,36 @@
+name: Auto Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Copy Project To Deployment Folder
+        run: |
+          sudo rm -rf /var/www/basicnode1/*
+          sudo cp -r . /var/www/basicnode1/
+
+      - name: Install Dependencies
+        run: |
+          cd /var/www/basicnode1
+          sudo npm install
+          sudo npm install pm2 -g
+
+      - name: Restart Application
+        run: |
+          cd /var/www/basicnode1
+
+          pm2 delete myapp || true
+
+          pm2 start server.js --name myapp
+
+          pm2 save      
+
