@@ -1,0 +1,16 @@
+name: Mirror to GitLab
+
+on: [push]
+
+jobs:
+  mirror_to_gitlab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to GitLab Mirror
+        run: |
+          git push --prune --force https://duggalvaibhav8-beep:${{ secrets.GITLAB_TOKEN }}@://gitlab.com refs/heads/*:refs/heads/* refs/tags/*:refs/tags/*
